@@ -104,6 +104,11 @@ springmvc-helloworld
     <!-- 自动扫描  @Controller-->
     <context:component-scan base-package="com.jk.web"/>
 
+   <!--配置视图解析器,把handle方法返回值解析为武器视图-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/views/"></property>
+        <property name="suffix" value=".jsp"></property>
+    </bean>
 </beans>
 ```
 3、在web.xml文件中配置DispatcherServlet,配置哪些请求通过DispatcherServlet转发:
@@ -148,14 +153,35 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class UserWeb {
 
-    @ResponseBody
+    /**
+     * 1,通过@RequestMapping类映射请求的URL
+     * 2,返回值会通过视图解析器解析为物理视图,对于InternalResourceViewResolver解析规则:
+     * 前缀+返回值+后缀
+     * 3,解析完成后做转发操作
+     *
+     * @return
+     */
     @RequestMapping("/sayhello")
     public String sayHello() {
-        return "hello springmvc";
+
+        return "hello";
     }
 }
 ```
 
-5、配置tomcat插件,点击Edit Configurations-加号-maven,如下图,配置完成后启动.
+5、根据视图解析器,在WEB-INF下新建views目录,在views目录下新建hello.jsp.
+
+如下视图解析器的配置,对于InternalResourceViewResolver解析规则:前缀+返回值+后缀.
+
+那么会将sayHello的返回值hello解析为/WEB-INF/views/hello.jsp,然后转发到hello.jsp.
+```
+   <!--配置视图解析器,把handle方法返回值解析为武器视图-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/views/"></property>
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+```
+
+6、配置tomcat插件,点击Edit Configurations-加号-maven,如下图,配置完成后启动.
 
 ![图片](https://github.com/jiekekeji/MStudySpringMvc/blob/master/demo001/preview/demo001.png)
