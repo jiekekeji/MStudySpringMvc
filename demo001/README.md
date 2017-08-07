@@ -158,3 +158,4 @@ public class UserWeb {
 
 5、配置tomcat插件,点击Edit Configurations-加号-maven,如下图,配置完成后启动.
 
+![图片](https://github.com/jiekekeji/MStudySpringMvc/blob/master/demo001/preview/demo001.png)
