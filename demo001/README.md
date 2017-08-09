@@ -1,4 +1,4 @@
-springmvc-helloworld
+springmvc4.x-helloworld
 ===
 
 1、新建maven-web工程,导入如下依赖:
