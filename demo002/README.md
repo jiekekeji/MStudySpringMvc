@@ -1,5 +1,5 @@
-springmvc-@RequestMapping
-===
+springmvc4.x-@RequestMapping注解
+==============================
 
 一、映射路径:@RequestMapping注解可以作用于方法也可以作用于类
 
@@ -30,11 +30,14 @@ public class UserWeb {
 }
 ```
 
-二、映射请求方法:
+二、映射请求方法:value 指定访问的路径,method指定访问的方法，
+
 ```
     @RequestMapping(value = "/register", method = RequestMethod.POST)
 ```
-value 指定访问的路径,method指定访问的方法:
+
+完整示例
+
 ```
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public String register() {
@@ -42,3 +45,49 @@ value 指定访问的路径,method指定访问的方法:
         return "success";
     }
 ```
+
+三、映射请求参数,通过params属性.例子:请求参数中必须包含userid,phone,并且phone的值不能为null, 如果请求参数不包含userid,或者不包含phone,或者phone的值为null都不能匹配到该方法:
+
+```
+@RequestMapping(value = "/updateUserName", params = {"userid", "phone", "phone!=null"})
+```
+
+完整示例
+
+```
+    /**
+     * 请求参数中必须包含userid,phone,并且phone的值不能为null,
+     * 如果请求参数不包含userid,或者不包含phone,或者phone的值为null都不能匹配到该方法
+     *
+     * @return
+     */
+    @RequestMapping(value = "/updateUserName", params = {"userid", "phone", "phone!=null"})
+    public String updateUserName() {
+        return "success";
+    }
+```
+
+四、映射请求头。例子：请求头中必须包含token，并且token的值不能为null,否则匹配不到。
+
+```
+@RequestMapping(value = "/updatePassword", headers = {"token", "token!=null"})
+```
+
+完整示例
+
+```
+    /**
+     * 请求头中必须包含token，并且token的值不能为null,否则匹配不到
+     * @return
+     */
+    @RequestMapping(value = "/updatePassword", headers = {"token", "token!=null"})
+    public String updatePassword() {
+        return "success";
+    }
+```
+
+
+
+
+
+
