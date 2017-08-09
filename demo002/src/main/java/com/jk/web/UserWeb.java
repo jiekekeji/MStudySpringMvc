@@ -1,6 +1,7 @@
 package com.jk.web;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -34,6 +35,7 @@ public class UserWeb {
 
     /**
      * 请求头中必须包含token，并且token的值不能为null,否则匹配不到
+     *
      * @return
      */
     @RequestMapping(value = "/updatePassword", headers = {"token", "token!=null"})
@@ -42,4 +44,15 @@ public class UserWeb {
     }
 
 
+    /**
+     * 将URL中的占位符userid映射到方法参数userid中。
+     *
+     * @param userid
+     * @return
+     */
+    @RequestMapping(value = "/updateEmail/{userid}")
+    public String updateEmail(@PathVariable("userid") String userid) {
+        System.out.println("接收的请求参数userid:" + userid);
+        return "success";
+    }
 }

@@ -86,8 +86,21 @@ public class UserWeb {
     }
 ```
 
+五、@PathVariable 绑定 URL 占位符到入参:
 
+1、带占位符的 URL 是 Spring3.0 新增的功能，该功能在SpringMVC 向 REST 目标挺进发展过程中具有里程碑的意义。
 
+2、通过 @PathVariable 可以将 URL 中占位符参数绑定到控制器处理方法的入参中：URL 中的 {xxx} 占位符可以通过@PathVariable("xxx") 绑定到操作方法的入参中。
 
+将URL中的占位符userid映射到方法参数userid中:
 
+```
+    @RequestMapping(value = "/updateEmail/{userid}")
+    public String updateEmail(@PathVariable("userid") String userid) {
+        System.out.println("接收的请求参数userid:" + userid);
+        return "success";
+    }
+```
+
+请求路径为：/updateEmail/123 ，那么获取到的userid=123。
 

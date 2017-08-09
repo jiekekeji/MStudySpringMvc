@@ -8,5 +8,6 @@
 
 <a href="/demo002/user/updateUserName?userid=123&phone=18876070118">映射请求参数</a>
 
+<a href="/demo002/user/updateEmail/123">PathVariable</a>
 </body>
 </html>
