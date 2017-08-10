@@ -11,9 +11,12 @@
 <form action="/demo003/update" method="post">
     <input name="userid" type="text" placeholder="userid">
     <input name="age" type="text" placeholder="age">
+    <%--user里有个address,address里有city,需要这么写--%>
     <input name="address.city" type="text" placeholder="city">
     <input name="address.road" type="text" placeholder="road">
     <input type="submit" value="提交">
 </form>
+
+<a href="/demo003/add">Servlet API</a>
 </body>
 </html>

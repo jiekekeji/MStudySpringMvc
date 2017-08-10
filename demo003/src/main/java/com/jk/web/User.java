@@ -4,14 +4,6 @@ package com.jk.web;
  * Created by jack on 17/8/9.
  */
 public class User {
-    @Override
-    public String toString() {
-        return "User{" +
-                "userid='" + userid + '\'' +
-                ", age=" + age +
-                ", address=" + address +
-                '}';
-    }
 
     private String userid;
     private int age;
@@ -41,5 +33,12 @@ public class User {
         this.address = address;
     }
 
-
+    @Override
+    public String toString() {
+        return "User{" +
+                "userid='" + userid + '\'' +
+                ", age=" + age +
+                ", address=" + address +
+                '}';
+    }
 }

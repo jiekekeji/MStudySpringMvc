@@ -2,14 +2,15 @@ package com.jk.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.InternalResourceView;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Controller
 public class UserWeb {
 
     /**
-     * 使用@RequestParam把请求参数传递给方法;
+     * 使用@RequestParam把请求参数传递给方法参数;
      * 参数名称:value = ("userid"),
      * 是否必须:required = true,默认为必须,如不存在抛异常
      *
@@ -75,4 +76,28 @@ public class UserWeb {
         System.out.println("info:" + user);
         return "hello";
     }
+
+
+    /**
+     * 使用Servlet API作为方法的参数:
+     * 可以接受的参数类型:
+     * HttpServletRequest,
+     * HttpServletResponse,
+     * HttpSession,
+     * java.security.Principal
+     * Locale
+     * InputStream
+     * OutputStream
+     * Reader
+     * Writer
+     *
+     * @return
+     */
+    @RequestMapping("/add")
+    public String add(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("request:" + request + "--response:" + response);
+        return "hello";
+    }
+
+
 }

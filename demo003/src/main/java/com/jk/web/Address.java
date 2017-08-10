@@ -5,16 +5,8 @@ package com.jk.web;
  */
 public class Address {
     private String city;
-
-    @Override
-    public String toString() {
-        return "Address{" +
-                "city='" + city + '\'' +
-                ", road='" + road + '\'' +
-                '}';
-    }
-
     private String road;
+
     public String getRoad() {
         return road;
     }
@@ -31,5 +23,11 @@ public class Address {
         this.city = city;
     }
 
-
+    @Override
+    public String toString() {
+        return "Address{" +
+                "city='" + city + '\'' +
+                ", road='" + road + '\'' +
+                '}';
+    }
 }

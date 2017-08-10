@@ -1,187 +1,190 @@
-springmvc4.x-helloworld
-===
+springmvc4.x-控制器方法入参
+====================
 
-1、新建maven-web工程,导入如下依赖:
+1、使用@RequestParam把请求参数传递给方法参数;@RequestParam的属性:
+---
+```
+   value:请求参数名称；
+   
+   required：请求参数是否是必须的，默认为必须,如不存在抛异常；
+   
+   defaultValue：请求参数的默认值
 
 ```
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>jiekekeji</groupId>
-    <artifactId>demo001</artifactId>
-    <packaging>war</packaging>
-    <version>1.0-SNAPSHOT</version>
-    <name>demo001 Maven Webapp</name>
-    <url>http://maven.apache.org</url>
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
-            <scope>provided</scope>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-core -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <version>4.2.5.RELEASE</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>4.2.5.RELEASE</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-beans -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-            <version>4.2.5.RELEASE</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-expression -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-expression</artifactId>
-            <version>4.2.5.RELEASE</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>4.2.5.RELEASE</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-            <version>4.2.5.RELEASE</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/commons-logging/commons-logging -->
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.1.3</version>
-        </dependency>
-    </dependencies>
-    <build>
-        <finalName>demo001</finalName>
-        <pluginManagement>
-            <plugins>
-                <!--tomcat7 maven 插件 -->
-                <plugin>
-                    <groupId>org.apache.tomcat.maven</groupId>
-                    <artifactId>tomcat7-maven-plugin</artifactId>
-                    <version>2.2</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
-</project>
+
+例子:
+```
+    @RequestMapping("/sayhello")
+    public String sayHello(@RequestParam(value = ("userid"), required = true) String userid) {
+        System.out.println("sayhello:" + userid);
+        return "hello";
+    }
+   
+   //客户端请求
+   <a href="/demo003/sayhello?userid=123465">RequestParam例子1</a>
 ```
 
-2、在类路径下新建springmvc的配置文件spring-mvc.xml:
-
 ```
-<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:mvc="http://www.springframework.org/schema/mvc"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
-                        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
-                        http://www.springframework.org/schema/context
-                        http://www.springframework.org/schema/context/spring-context-4.0.xsd
-                        http://www.springframework.org/schema/mvc
-                        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
-
-    <!-- 自动扫描  @Controller-->
-    <context:component-scan base-package="com.jk.web"/>
-
-   <!--配置视图解析器,把handle方法返回值解析为武器视图-->
-    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="prefix" value="/WEB-INF/views/"></property>
-        <property name="suffix" value=".jsp"></property>
-    </bean>
-</beans>
-```
-3、在web.xml文件中配置DispatcherServlet,配置哪些请求通过DispatcherServlet转发:
-
-```
-<!DOCTYPE web-app PUBLIC
-        "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
-        "http://java.sun.com/dtd/web-app_2_3.dtd" >
-
-<web-app>
-    <display-name>Archetype Created Web Application</display-name>
-
-    <!--start 配置springmvc-->
-    <servlet>
-        <servlet-name>Dispatcher</servlet-name>
-        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-        <init-param>
-            <param-name>contextConfigLocation</param-name>
-            <param-value>classpath:spring-mvc.xml</param-value>
-        </init-param>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>Dispatcher</servlet-name>
-        <!--<url-pattern>/</url-pattern>  会匹配到/login这样的路径型url，不会匹配到模式为*.jsp这样的后缀型url-->
-        <!--<url-pattern>/*</url-pattern> 会匹配所有url：路径型的和后缀型的url(包括/login,*.jsp,*.js和*.html等)-->
-        <url-pattern>/</url-pattern>
-    </servlet-mapping>
-    <!--end 配置springmvc-->
-</web-app>
+    @RequestMapping("/register")
+    public String register(@RequestParam(value = ("gender"), defaultValue = "woman") String gender) {
+        System.out.println("register:" + gender);
+        return "hello";
+    }
+    
+    //客户端请求
+    <a href="/demo003/register?gender=man">RequestParam例子2</a>
 ```
 
-4、在包com.jk.web下新建UserWeb.java类:
+2、使用@RequestHeader将请求头映射到方法的参数中，@RequestHeader属性:
+---
+```
+   value:请求头的键，如 value = ("Accept-Language")；
+   
+   required：该请求头是否是必须的，默认为必须,如不存在抛异常；
+   
+   defaultValue：请求头的默认值
 
+```
+例子：
+```
+    @RequestMapping("/login")
+    public String login(@RequestHeader(value = ("Accept-Language"), required = false) String acceptLanguage) {
+        System.out.println("login:" + acceptLanguage);
+        return "hello";
+    }
+```
+
+3、使用@CookieValue将cookie值映射到方法的参数中，@CookieValue属性：
+---
+```
+   value:cookie的键，如value = ("JSESSIONID")；
+   
+   required：该cookie值是否是必须的，默认为必须,如不存在抛异常；
+   
+   defaultValue：cookie值的默认值
+
+```
+例子:
+```
+    @RequestMapping("/info")
+    public String info(@CookieValue(value = ("JSESSIONID"), required = false) String jsessionid) {
+        System.out.println("info:" + jsessionid);
+        return "hello";
+    }
+```
+
+4、将请求参数绑定到bean对象中，springmvc会自动将请求参数名和对象的属性名进行自动的匹配,自动为该对象填充属性值,支持级联属性.
+----------------------------------------------------------------------
+
+4.1、先创建两个类，User和Address,User里有Address：
+
+Address.java:
 ```
 package com.jk.web;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+public class Address {
+    private String city;
+    private String road;
 
-@Controller
-public class UserWeb {
-
-    /**
-     * 1,通过@RequestMapping类映射请求的URL
-     * 2,返回值会通过视图解析器解析为物理视图,对于InternalResourceViewResolver解析规则:
-     * 前缀+返回值+后缀
-     * 3,解析完成后做转发操作
-     *
-     * @return
-     */
-    @RequestMapping("/sayhello")
-    public String sayHello() {
-
-        return "hello";
+    public String getRoad() {
+        return road;
+    }
+    public void setRoad(String road) {
+        this.road = road;
+    }
+    public String getCity() {
+        return city;
+    }
+    public void setCity(String city) {
+        this.city = city;
+    }
+    @Override
+    public String toString() {
+        return "Address{" +
+                "city='" + city + '\'' +
+                ", road='" + road + '\'' +
+                '}';
     }
 }
+
 ```
-
-5、根据视图解析器,在WEB-INF下新建views目录,在views目录下新建hello.jsp.
-
-如下视图解析器的配置,对于InternalResourceViewResolver解析规则:前缀+返回值+后缀.
-
-那么会将sayHello的返回值hello解析为/WEB-INF/views/hello.jsp,然后转发到hello.jsp.
+User.java:
 ```
-   <!--配置视图解析器,把handle方法返回值解析为武器视图-->
-    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="prefix" value="/WEB-INF/views/"></property>
-        <property name="suffix" value=".jsp"></property>
-    </bean>
+package com.jk.web;
+public class User {
+
+    private String userid;
+    private int age;
+    private Address address;
+
+    public String getUserid() {
+        return userid;
+    }
+    public void setUserid(String userid) {
+        this.userid = userid;
+    }
+    public int getAge() {
+        return age;
+    }
+    public void setAge(int age) {
+        this.age = age;
+    }
+    public Address getAddress() {
+        return address;
+    }
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+    @Override
+    public String toString() {
+        return "User{" +
+                "userid='" + userid + '\'' +
+                ", age=" + age +
+                ", address=" + address +
+                '}';
+    }
+}
+
 ```
-
-6、配置tomcat插件,点击Edit Configurations-加号-maven,如下图,配置完成后启动.
-
-![图片](https://github.com/jiekekeji/MStudySpringMvc/blob/master/demo001/preview/demo001.png)
+4.2、控制器，直接将User作为方法参数:
+```
+    @RequestMapping("/update")
+    public String update(User user) {
+        System.out.println("info:" + user);
+        return "hello";
+    }
+```
+4.3、客户端请求：
+```
+<form action="/demo003/update" method="post">
+    <input name="userid" type="text" placeholder="userid">
+    <input name="age" type="text" placeholder="age">
+    
+    <%--user里有个address,address里有city,需要这么写--%>
+    
+    <input name="address.city" type="text" placeholder="city">
+    <input name="address.road" type="text" placeholder="road">
+    <input type="submit" value="提交">
+</form>
+```
+5、使用Servlet API作为方法的参数:可以作为参数的Servlet API类型：
+----
+```
+    HttpServletRequest 
+    HttpServletResponse 
+    HttpSession 
+    java.security.Principal 
+    Locale 
+    InputStream 
+    OutputStream 
+    Reader 
+    Writer
+```
+例子:
+```
+    @RequestMapping("/add")
+    public String add(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("request:" + request + "--response:" + response);
+        return "hello";
+    }
+```
