@@ -1,8 +1,8 @@
-springmvc4.x-@RequestMapping注解
-==============================
+springmvc4.x-控制器方法路径映射
+======================
 
 一、映射路径:@RequestMapping注解可以作用于方法也可以作用于类
-
+---
 1、映射方法:如下访问路径为相对于web应用跟目录:
 ```
 @Controller
@@ -30,8 +30,8 @@ public class UserWeb {
 }
 ```
 
-二、映射请求方法:value 指定访问的路径,method指定访问的方法，
-
+二、带请求方法的路径映射:value 指定访问的路径,method指定访问的方法，
+-----------------------------------------
 ```
     @RequestMapping(value = "/register", method = RequestMethod.POST)
 ```
@@ -46,8 +46,8 @@ public class UserWeb {
     }
 ```
 
-三、映射请求参数,通过params属性.例子:请求参数中必须包含userid,phone,并且phone的值不能为null, 如果请求参数不包含userid,或者不包含phone,或者phone的值为null都不能匹配到该方法:
-
+三、带请求参数的路径映射：通过params属性.例子:请求参数中必须包含userid,phone,并且phone的值不能为null, 如果请求参数不包含userid,或者不包含phone,或者phone的值为null都不能匹配到该方法:
+-----------------------------------------------------------------------------------------------------------------------
 ```
 @RequestMapping(value = "/updateUserName", params = {"userid", "phone", "phone!=null"})
 ```
@@ -67,8 +67,8 @@ public class UserWeb {
     }
 ```
 
-四、映射请求头。例子：请求头中必须包含token，并且token的值不能为null,否则匹配不到。
-
+四、带请求头的路径映射:例子,请求头中必须包含token，并且token的值不能为null,否则匹配不到。
+-----------------------------------------------------
 ```
 @RequestMapping(value = "/updatePassword", headers = {"token", "token!=null"})
 ```
@@ -87,7 +87,7 @@ public class UserWeb {
 ```
 
 五、@PathVariable 绑定 URL 占位符到入参:
-
+---
 1、带占位符的 URL 是 Spring3.0 新增的功能，该功能在SpringMVC 向 REST 目标挺进发展过程中具有里程碑的意义。
 
 2、通过 @PathVariable 可以将 URL 中占位符参数绑定到控制器处理方法的入参中：URL 中的 {xxx} 占位符可以通过@PathVariable("xxx") 绑定到操作方法的入参中。
