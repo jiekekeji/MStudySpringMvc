@@ -1,187 +1,168 @@
-springmvc4.x-控制器方法返回值
-=====================
+springmvc4.x-方法数据处理
+===================
 
-1、新建maven-web工程,导入如下依赖:
+一、放入请求域中
+--------
 
+1、ModelAndView：控制器处理方法的返回值如果为 ModelAndView, 则其既包含视图信息，也包含模型数据信息。
+
+控制器方法:
 ```
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>jiekekeji</groupId>
-    <artifactId>demo001</artifactId>
-    <packaging>war</packaging>
-    <version>1.0-SNAPSHOT</version>
-    <name>demo001 Maven Webapp</name>
-    <url>http://maven.apache.org</url>
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
-            <scope>provided</scope>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-core -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <version>4.2.5.RELEASE</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>4.2.5.RELEASE</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-beans -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-            <version>4.2.5.RELEASE</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-expression -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-expression</artifactId>
-            <version>4.2.5.RELEASE</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>4.2.5.RELEASE</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-            <version>4.2.5.RELEASE</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/commons-logging/commons-logging -->
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.1.3</version>
-        </dependency>
-    </dependencies>
-    <build>
-        <finalName>demo001</finalName>
-        <pluginManagement>
-            <plugins>
-                <!--tomcat7 maven 插件 -->
-                <plugin>
-                    <groupId>org.apache.tomcat.maven</groupId>
-                    <artifactId>tomcat7-maven-plugin</artifactId>
-                    <version>2.2</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
-</project>
+    @RequestMapping("/modelandview")
+    public ModelAndView modelAndView() {
+    
+        //1、初始化ModelAndView并设置视图信息hello，完成后跳转hello.jsp视图
+        ModelAndView modelAndView = new ModelAndView("hello");
+
+        //2、添加数据模型
+        modelAndView.addObject("userid", "a025asdf2c5asd23");
+
+        //3、添加数据模型
+        User user = new User();
+        user.setUserid("5asd5cas5c4asd2");
+        user.setUserName("jack");
+
+        modelAndView.addObject("user", user);
+        //4、返回ModelAndView
+        return modelAndView;
+    }
 ```
 
-2、在类路径下新建springmvc的配置文件spring-mvc.xml:
-
+视图hello.jsp,从请求域中获取数据模型：
 ```
-<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:mvc="http://www.springframework.org/schema/mvc"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
-                        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
-                        http://www.springframework.org/schema/context
-                        http://www.springframework.org/schema/context/spring-context-4.0.xsd
-                        http://www.springframework.org/schema/mvc
-                        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
-
-    <!-- 自动扫描  @Controller-->
-    <context:component-scan base-package="com.jk.web"/>
-
-   <!--配置视图解析器,把handle方法返回值解析为武器视图-->
-    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="prefix" value="/WEB-INF/views/"></property>
-        <property name="suffix" value=".jsp"></property>
-    </bean>
-</beans>
-```
-3、在web.xml文件中配置DispatcherServlet,配置哪些请求通过DispatcherServlet转发:
-
-```
-<!DOCTYPE web-app PUBLIC
-        "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
-        "http://java.sun.com/dtd/web-app_2_3.dtd" >
-
-<web-app>
-    <display-name>Archetype Created Web Application</display-name>
-
-    <!--start 配置springmvc-->
-    <servlet>
-        <servlet-name>Dispatcher</servlet-name>
-        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-        <init-param>
-            <param-name>contextConfigLocation</param-name>
-            <param-value>classpath:spring-mvc.xml</param-value>
-        </init-param>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>Dispatcher</servlet-name>
-        <!--<url-pattern>/</url-pattern>  会匹配到/login这样的路径型url，不会匹配到模式为*.jsp这样的后缀型url-->
-        <!--<url-pattern>/*</url-pattern> 会匹配所有url：路径型的和后缀型的url(包括/login,*.jsp,*.js和*.html等)-->
-        <url-pattern>/</url-pattern>
-    </servlet-mapping>
-    <!--end 配置springmvc-->
-</web-app>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@page isELIgnored="false" %>
+<html>
+<head>
+    <title>Title</title>
+</head>
+<body>
+<p>ModelAndView:${requestScope.userid },userid=${requestScope.user.userid},username=${requestScope.user.userName}</p>
+</body>
+</html>
 ```
 
-4、在包com.jk.web下新建UserWeb.java类:
+2、Map:控制器方法的入参为 Map，
 
+控制器方法:
+```
+    @RequestMapping("/testmap")
+    public String testMap(Map<String, Object> map) {
+
+        map.put("token", "id52asdasdc5");
+
+        User user1 = new User();
+        user1.setUserid("5asd5cas5c4asd2");
+        user1.setUserName("jack");
+        map.put("user1", user1);
+
+        return "hello";
+    }
+```
+视图hello.jsp,从请求域中获取数据模型：
+```
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@page isELIgnored="false" %>
+<html>
+<head>
+    <title>Title</title>
+</head>
+<body>
+
+<p>TestMap:${requestScope.token },userid=${requestScope.user1.userid},username=${requestScope.user1.userName}</p>
+
+</body>
+</html>
+
+```
+
+
+二、放入会话域中
+--------
+
+1、@SessionAttributes:应用到Controller上面，可以将Model中的属性同步到session当中。
+
+2、@SessionAttributes参数：
+```
+    1、names：这是一个字符串数组。里面应写需要存储到session中数据的名称。
+
+　　2、types：根据指定参数的类型，将模型中对应类型的参数存储到session中
+
+　  3、value：其实和names是一样的。
+```
+
+```
+@SessionAttributes(names = {"userid", "token"}, types = {User.class})
+```
+将请求域中Model属性为userid,token,类型为User的读放入session域中，
+
+3、控制器:
 ```
 package com.jk.web;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 @Controller
+@RequestMapping("/user")
+@SessionAttributes(names = {"userid", "token"}, types = {User.class})
 public class UserWeb {
 
-    /**
-     * 1,通过@RequestMapping类映射请求的URL
-     * 2,返回值会通过视图解析器解析为物理视图,对于InternalResourceViewResolver解析规则:
-     * 前缀+返回值+后缀
-     * 3,解析完成后做转发操作
-     *
-     * @return
-     */
-    @RequestMapping("/sayhello")
-    public String sayHello() {
+
+    @RequestMapping("/modelandview")
+    public ModelAndView modelAndView() {
+        //1、初始化ModelAndView并设置视图信息hello，完成后跳转hello.jsp视图
+        ModelAndView modelAndView = new ModelAndView("hello");
+
+        //2、添加数据模型
+        modelAndView.addObject("userid", "a025asdf2c5asd23");
+
+        //3、添加数据模型
+        User user = new User();
+        user.setUserid("5asd5cas5c4asd2");
+        user.setUserName("jack");
+
+        modelAndView.addObject("user", user);
+        //4、返回ModelAndView
+        return modelAndView;
+    }
+
+    @RequestMapping("/testmap")
+    public String testMap(Map<String, Object> map) {
+
+        map.put("token", "id52asdasdc5");
+
+        User user1 = new User();
+        user1.setUserid("5asd5cas5c4asd2");
+        user1.setUserName("jack");
+        map.put("user1", user1);
 
         return "hello";
     }
 }
+
 ```
 
-5、根据视图解析器,在WEB-INF下新建views目录,在views目录下新建hello.jsp.
-
-如下视图解析器的配置,对于InternalResourceViewResolver解析规则:前缀+返回值+后缀.
-
-那么会将sayHello的返回值hello解析为/WEB-INF/views/hello.jsp,然后转发到hello.jsp.
+视图hello.jsp,从会话域中获取数据模型：
 ```
-   <!--配置视图解析器,把handle方法返回值解析为武器视图-->
-    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="prefix" value="/WEB-INF/views/"></property>
-        <property name="suffix" value=".jsp"></property>
-    </bean>
+<%--
+  Created by IntelliJ IDEA.
+  User: jack
+  Date: 17/8/8
+  Time: 00:13
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@page isELIgnored="false" %>
+<html>
+<head>
+    <title>Title</title>
+</head>
+<body>
+
+<p>
+    SessionAttributes:userid=${sessionScope.userid },token=${sessionScope.token },user=${sessionScope.user1 },user1=${sessionScope.user1 }
+</p>
+
+</body>
+</html>
+
+
 ```
-
-6、配置tomcat插件,点击Edit Configurations-加号-maven,如下图,配置完成后启动.
-
-![图片](https://github.com/jiekekeji/MStudySpringMvc/blob/master/demo001/preview/demo001.png)
