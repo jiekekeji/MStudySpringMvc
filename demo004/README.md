@@ -166,3 +166,58 @@ public class UserWeb {
 
 
 ```
+
+三、@ModelAttribute:
+--------
+1、在方法定义上使 @ModelAttribute 注 解，spring MVC 在调用目标方法前会先调用在方法级上标注了@ModelAttribute方法。
+
+2、在标注@ModelAttribute的方法执行完成后。可将值以方法参数的方式传递给目标方法。
+
+控制器:
+```
+@Controller
+@RequestMapping("/com")
+public class ComWeb {
+
+
+    /**
+     * @param username
+     * @param map
+     */
+    @ModelAttribute
+    public void beforeMethods(@RequestParam(value = "username", required = true) String username,
+                              Map<String, Object> map) {
+        System.out.println("beforeMethods username=" + username);
+
+        User user = new User();
+        user.setUserName(username);
+        user.setUserid("as23asdfc56");
+
+        //放入请求域中，传递给下一个方法
+        map.put("user", user);
+    }
+
+    @RequestMapping(value = "update")
+    public String update(User user) {
+        System.out.println("update user=" + user);
+        return "hello";
+    }
+
+    @RequestMapping(value = "add")
+    public String add(User user) {
+        System.out.println("add user=" + user);
+        return "hello";
+    }
+}
+```
+方法beforeMethods标注了@ModelAttribute注解，如客户端方法的目标方法为update，那么springmvc会先调用方法beforeMethods，然后将user以参数的方式传递给update方法；
+调用add方法同理。
+
+客户端请求：
+```
+<p><a href="/demo004/com/update?username=jack">TestModelAttribute1</a></p>
+
+<p><a href="/demo004/com/add?username=jack">TestModelAttribute2</a></p>
+
+```
+
