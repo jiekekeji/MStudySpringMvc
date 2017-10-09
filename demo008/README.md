@@ -16,8 +16,19 @@ springmvc4.x-自定义拦截器
 
 二、实现过程：
 ---
-1、定义HelloInterceptor，继承HandlerInterceptorAdapter，实现响应的方法：
+1、定义HelloInterceptor，继承HandlerInterceptorAdapter，实现相应的方法：
 ```
+package com.jk.interceptor;
+
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * Created by Handsome on 2017/8/15.
+ */
 public class HelloInterceptor extends HandlerInterceptorAdapter {
 
     @Override
@@ -38,41 +49,29 @@ public class HelloInterceptor extends HandlerInterceptorAdapter {
         super.afterCompletion(request, response, handler, ex);
     }
 }
+
 ```
 
-2、定义拦截器注解：
-```
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface HelloInterceptor {
-}
-```
 
-3、配置拦截器，在springmvc的配置文件中配置拦截器：
+2、配置拦截器，在springmvc的配置文件中配置拦截器：
 ```
 <!--拦截器配置-->
 <mvc:interceptors>
     <!-- 权限拦截器 -->
     <mvc:interceptor>
         <!--拦截规则，拦截所有请求,这样配置静态资源的请求会被拦截-->
-        <mvc:mapping path="/*"/>
+        <mvc:mapping path="/**"/>
         <!-- 需排除拦截的地址,如static下的静态资源不需要拦截 -->
         <mvc:exclude-mapping path="/static/**"/>
-        <bean class=" com.jk.web.HelloInterceptor"/>
+        <bean class=" com.jk.interceptor.HelloInterceptor"/>
     </mvc:interceptor>
 </mvc:interceptors>
 ```
 
-4、在响应的控制器方法上加上拦截器注解：@com.jk.annotation.HelloInterceptor
+3、测试结果。
 ```
-@Controller
-public class UserWeb {
-
-    @com.jk.annotation.HelloInterceptor
-    @RequestMapping("/sayhello")
-    public String sayHello() {
-        System.out.println("sayhello");
-        return "hello";
-    }
-}
+preHandle
+sayhello
+postHandle
+afterCompletion
 ```
